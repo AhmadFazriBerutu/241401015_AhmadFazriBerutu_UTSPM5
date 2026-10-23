@@ -12,54 +12,54 @@ class QuizProvider with ChangeNotifier {
 
   final List<Question> _questions = [
     Question(
-      text: 'Apa framework UI buatan Google untuk membuat aplikasi lintas platform?',
-      options: ['React Native', 'Flutter', 'Xamarin', 'Ionic'],
+      text: 'Siapa nama karakter utama yang bereinkarnasi ke Benua Douluo?',
+      options: ['Xiao Yan', 'Tang San', 'Lin Dong', 'Shi Hao'],
       correctAnswerIndex: 1,
     ),
     Question(
-      text: 'Bahasa pemrograman apa yang digunakan dalam pengembangan Flutter?',
-      options: ['Java', 'Kotlin', 'Dart', 'Swift'],
+      text: 'Selain Clear Sky Hammer, apa nama Spirit (Jiwa Bela Diri) asli milik Tang San?',
+      options: ['Harimau Putih', 'Rumput Perak Biru', 'Sosis Unik', 'Phoenix Api'],
+      correctAnswerIndex: 1,
+    ),
+    Question(
+      text: 'Siapa nama guru Tang San yang terkenal dengan penelitian teori kultivasi Spirit Master?',
+      options: ['Flender', 'Zhao Wuji', 'Yu Xiaogang', 'Qian Xunji'],
       correctAnswerIndex: 2,
     ),
     Question(
-      text: 'Widget mana yang digunakan jika tampilan tidak membutuhkan perubahan state?',
-      options: ['StatefulWidget', 'StatelessWidget', 'InheritedWidget', 'MaterialApp'],
+      text: 'Apa nama akademi tempat Tujuh Iblis Shrek (Shrek Seven Devils) dibentuk?',
+      options: ['Akademi Tiandou', 'Akademi Shrek', 'Akademi Wuhun', 'Akademi Bintang Luo'],
       correctAnswerIndex: 1,
     ),
     Question(
-      text: 'Perintah apa yang digunakan untuk menjalankan proyek Flutter di terminal?',
-      options: ['flutter build', 'flutter run', 'flutter create', 'flutter doctor'],
-      correctAnswerIndex: 1,
-    ),
-    Question(
-      text: 'File mana dalam proyek Flutter yang digunakan untuk menambahkan dependensi?',
-      options: ['main.dart', 'pubspec.yaml', 'build.gradle', 'AndroidManifest.xml'],
-      correctAnswerIndex: 1,
-    ),
-    Question(
-      text: 'Widget mana yang digunakan untuk menyusun elemen secara vertikal?',
-      options: ['Row', 'Column', 'Stack', 'Container'],
-      correctAnswerIndex: 1,
-    ),
-    Question(
-      text: 'Fungsi apa yang dipanggil untuk memperbarui tampilan pada StatefulWidget?',
-      options: ['setState()', 'updateUI()', 'refresh()', 'rebuild()'],
-      correctAnswerIndex: 0,
-    ),
-    Question(
-      text: 'Widget apa yang menyediakan struktur dasar halaman Material Design?',
-      options: ['Scaffold', 'Container', 'SizedBox', 'AppBar'],
-      correctAnswerIndex: 0,
-    ),
-    Question(
-      text: 'Komponen apa yang digunakan untuk menangkap teks input dari pengguna?',
-      options: ['TextView', 'TextFormField', 'TextField', 'InputBox'],
+      text: 'Siapa pahlawan wanita utama yang merupakan reinkarnasi dari Spirit Beast berusia 100.000 tahun?',
+      options: ['Zhu Zhuqing', 'Ning Rongrong', 'Xiao Wu', 'Qian Renxue'],
       correctAnswerIndex: 2,
     ),
     Question(
-      text: 'Perintah apa yang digunakan untuk memeriksa instalasi Flutter di komputer?',
-      options: ['flutter check', 'flutter doctor', 'flutter test', 'flutter info'],
+      text: 'Apa nama senjata tersembunyi (Hidden Weapon) legendaris peninggalan Sekte Tang yang dikuasai Tang San?',
+      options: ['Jarum Bunga Plum', 'Teratai Kemarahan Buddha', 'Panah Penembus Armor', 'Pisau Terbang'],
       correctAnswerIndex: 1,
+    ),
+    Question(
+      text: 'Siapa anggota Tujuh Iblis Shrek yang memiliki Spirit tipe pendukung berupa sosis?',
+      options: ['Dai Mubai', 'Ma Hongjun', 'Oscar', 'Tang San'],
+      correctAnswerIndex: 2,
+    ),
+    Question(
+      text: 'Organisasi antagonis utama di benua Douluo yang memburu Spirit Beast berusia 100.000 tahun adalah?',
+      options: ['Sekte Haotian', 'Spirit Hall', 'Sekte Kaca Berlapis 7', 'Sekte Naga Petir Biru'],
+      correctAnswerIndex: 1,
+    ),
+    Question(
+      text: 'Siapa nama ayah Tang San yang merupakan salah satu Titled Douluo termuda dan terkuat?',
+      options: ['Tang Xiao', 'Tang Chen', 'Tang Hao', 'Tang San'],
+      correctAnswerIndex: 2,
+    ),
+    Question(
+      text: 'Pada Turnamen Elite Spirit Master tingkat Benua, siapa lawan terkuat Shrek di babak final?',
+      options: ['Tim Akademi Tiandou', 'Tim Bintang Luo', 'Tim Generasi Emas Spirit Hall', 'Tim Gajah Berlapis Besi'],
+      correctAnswerIndex: 2,
     ),
   ];
 
