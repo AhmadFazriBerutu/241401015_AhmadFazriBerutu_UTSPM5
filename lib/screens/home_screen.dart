@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../providers/quiz_provider.dart';
 import '../widgets/custom_button.dart';
 import 'quiz_screen.dart';
 
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Card(
-            elevation: 8,
+            elevation: 6,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -36,27 +37,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.quiz_rounded,
-                    size: 100,
-                    color: Colors.indigo,
-                  ),
-                  const SizedBox(height: 20),
+                  const Icon(Icons.quiz_rounded, size: 90, color: Colors.indigo), 
+                  const SizedBox(height: 16),
                   const Text(
                     "Kuis Pemrograman Mobile",
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 22, 
                       fontWeight: FontWeight.bold,
-                      color: Colors.indigo,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Uji pengetahuan Flutter-mu!",
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Uji pengetahuan Flutter & Dart kamu!",
+                    style: TextStyle(fontSize: 14, color: Theme.of(context).hintColor),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 32),
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(
@@ -64,12 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      prefixIcon: const Icon(
-                        Icons.person,
-                        color: Colors.indigo,
-                      ),
-                      filled: true,
-                      fillColor: Colors.indigo.withOpacity(0.05),
+                      prefixIcon: const Icon(Icons.person),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -77,12 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     text: 'Mulai Kuis',
                     onPressed: () {
                       if (_nameController.text.trim().isNotEmpty) {
-                        Navigator.push(
+                        context.read<QuizProvider>().setUserName(_nameController.text.trim());
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => QuizScreen(
-                              userName: _nameController.text.trim(),
-                            ),
+                            builder: (context) => const QuizScreen(),
                           ),
                         );
                       } else {

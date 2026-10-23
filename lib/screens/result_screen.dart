@@ -1,38 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/quiz_provider.dart';
 import '../widgets/custom_button.dart';
 import 'home_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  final String userName;
-
-  const ResultScreen({Key? key, required this.userName}) : super(key: key);
+  const ResultScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final quizProvider = context.watch<QuizProvider>();
+
     return Scaffold(
       body: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.task_alt_rounded, size: 100, color: Colors.green),
-              const SizedBox(height: 24),
+              const Icon(Icons.emoji_events_rounded, size: 100, color: Colors.amber),
+              const SizedBox(height: 20),
               Text(
-                'Selamat, $userName!',
+                'Selamat, ${quizProvider.userName}!',
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
               const Text(
-                'Anda telah menyelesaikan 10 soal kuis.',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-                textAlign: TextAlign.center,
+                'Skor Akhir Anda:',
+                style: TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 8),
+              Text(
+                '${quizProvider.score} / 100',
+                style: const TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo,
+                ),
+              ),
+              const SizedBox(height: 36),
               CustomButton(
-                text: 'Kembali ke Halaman Utama',
+                text: 'Mulai Ulang Kuis',
                 onPressed: () {
+                  quizProvider.resetQuiz();
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),
