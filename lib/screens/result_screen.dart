@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
@@ -13,135 +12,147 @@ class ResultScreen extends StatelessWidget {
     final quizProvider = context.watch<QuizProvider>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF070B19),
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: ShaderMask(
-              shaderCallback: (Rect bounds) {
-                return const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.white, Colors.white, Colors.transparent],
-                  stops: [0.0, 0.6, 1.0],
-                ).createShader(bounds);
-              },
-              blendMode: BlendMode.dstIn,
-              child: Image.asset(
-                'assets/images/poster.jpg',
-                height: 480,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                alignment: const Alignment(0.0, -0.4),
-              ),
-            ),
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF09090E), Color(0xFF111D3B), Color(0xFF09090E)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                children: [
-                  const Spacer(flex: 3),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFF0A0F24).withOpacity(0.75),
-                              const Color(0xFF170D36).withOpacity(0.55),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: Colors.amberAccent.withOpacity(0.4),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.6),
-                              blurRadius: 25,
-                              spreadRadius: 5,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.diamond_outlined,
-                              color: Colors.amberAccent,
-                              size: 48,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              'UJIAN SELESAI,\n${quizProvider.userName.toUpperCase()}!',
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                                letterSpacing: 2.0,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 32),
-                            const Text(
-                              'KEKUATAN SPIRITUAL',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white70,
-                                letterSpacing: 4.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${quizProvider.score}',
-                              style: const TextStyle(
-                                fontSize: 88,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.amberAccent,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.orange,
-                                    blurRadius: 25,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+        ),
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.white, Colors.transparent],
+                    stops: [0.5, 1.0],
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.dstIn,
+                child: Container(
+                  height: 320,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/poster.jpg'),
+                      fit: BoxFit.cover,
+                      alignment: Alignment(0.0, -0.4),
                     ),
                   ),
-                  const Spacer(flex: 4),
-                  CustomButton(
-                    text: 'KEMBALI KE AKADEMI',
-                    onPressed: () {
-                      quizProvider.resetQuiz();
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomeScreen()),
-                        (route) => false,
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                ),
               ),
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [Colors.amberAccent, Colors.orange],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ).createShader(bounds),
+                        child: Text(
+                          'UJIAN SELESAI,\n${quizProvider.userName.toUpperCase()}!',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: 2.0,
+                            shadows: [
+                              Shadow(color: Colors.black87, blurRadius: 10, offset: Offset(2, 2)),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.cyanAccent.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: Colors.cyanAccent.withOpacity(0.4), width: 1.5),
+                        ),
+                        child: const Text(
+                          'KEKUATAN SPIRITUAL AKHIR',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.cyanAccent,
+                            letterSpacing: 3.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      Container(
+                        width: 180,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const RadialGradient(
+                            colors: [Color(0xFF1A2A4A), Color(0xFF09090E)],
+                            center: Alignment.center,
+                            radius: 0.8,
+                          ),
+                          border: Border.all(color: Colors.cyanAccent.withOpacity(0.6), width: 3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.cyanAccent.withOpacity(0.3),
+                              blurRadius: 50,
+                              spreadRadius: 10,
+                            ),
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.8),
+                              blurRadius: 15,
+                              spreadRadius: -5,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${quizProvider.score}',
+                            style: const TextStyle(
+                              fontSize: 72,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(color: Colors.cyanAccent, blurRadius: 20),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      CustomButton(
+                        text: 'KEMBALI KE AKADEMI',
+                        onPressed: () {
+                          quizProvider.resetQuiz();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            (route) => false,
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
