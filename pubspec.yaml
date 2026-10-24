@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.1.1
-  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -21,3 +20,22 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-Black.ttf
+          weight: 900
+    - family: Cinzel
+      fonts:
+        - asset: assets/fonts/Cinzel-Regular.ttf
+        - asset: assets/fonts/Cinzel-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Cinzel-Black.ttf
+          weight: 900
