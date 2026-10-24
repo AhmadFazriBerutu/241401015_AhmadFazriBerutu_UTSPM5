@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'app_colors.dart';
+import 'app_palette.dart';
 
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get dark {
+  static ThemeData get dark => _build(Brightness.dark, AppPalette.dark);
+  static ThemeData get light => _build(Brightness.light, AppPalette.light);
+
+  static ThemeData _build(Brightness brightness, AppPalette palette) {
     final base = ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
+      brightness: brightness,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.gold,
-        brightness: Brightness.dark,
+        seedColor: palette.accent,
+        brightness: brightness,
       ),
-      scaffoldBackgroundColor: AppColors.bgDark,
+      scaffoldBackgroundColor: palette.bgEdge,
     );
 
     return base.copyWith(
+      extensions: <ThemeExtension<dynamic>>[palette],
+      // Font dasar seluruh aplikasi: Poppins.
+      // Judul memakai GoogleFonts.cinzel di tiap layar.
       textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).apply(
-        bodyColor: AppColors.textPrimary,
-        displayColor: AppColors.textPrimary,
+        bodyColor: palette.textPrimary,
+        displayColor: palette.textPrimary,
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.gold,
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: palette.accent,
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.dangerBorder,
+        backgroundColor: palette.dangerBorder,
         contentTextStyle: GoogleFonts.poppins(
           color: Colors.white,
           fontWeight: FontWeight.w600,
