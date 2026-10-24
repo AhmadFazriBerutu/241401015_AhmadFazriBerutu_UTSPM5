@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../providers/quiz_provider.dart';
+import '../theme/app_fonts.dart';
 import '../theme/app_palette.dart';
 import '../utils/page_routes.dart';
 import '../utils/responsive.dart';
@@ -12,7 +12,7 @@ import '../widgets/theme_toggle_button.dart';
 import 'quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -54,7 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
     quiz.startQuiz();
     Navigator.pushReplacement(
       context,
-      fadeRoute(const QuizScreen(), duration: const Duration(milliseconds: 800)),
+      fadeRoute(const QuizScreen(),
+          duration: const Duration(milliseconds: 800)),
     );
   }
 
@@ -62,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final r = Responsive.of(context);
     final c = context.colors;
-    // Logo = 36% sisi terpendek layar (dibatasi 96 - 200)
+
     final logoSize = r.fromShortest(0.36, min: 96, max: 200);
 
     return Scaffold(
@@ -94,8 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 border: Border.all(color: c.accent, width: 2),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: c.accent
-                                        .withOpacity((c.isDark ? 0.4 : 0.25) * scale),
+                                    color: c.accent.withValues(
+                                        alpha: (c.isDark ? 0.4 : 0.25) * scale),
                                     blurRadius: logoSize * 0.28,
                                     spreadRadius: logoSize * 0.07,
                                   ),
@@ -118,12 +119,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context, double opacity, child) {
                           return Opacity(
                             opacity: opacity,
-                            // FittedBox: judul selalu muat satu baris
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                "SOUL LAND",
-                                style: GoogleFonts.cinzel(
+                                'SOUL LAND',
+                                style: TextStyle(
+                                  fontFamily: AppFonts.display,
                                   fontSize: r.s(48),
                                   fontWeight: FontWeight.w900,
                                   color: c.textPrimary,
@@ -138,8 +139,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SizedBox(height: r.s(8)),
                       Text(
-                        "10 Soal • Pilihan Ganda • ${QuizProvider.secondsPerQuestion} detik/soal",
-                        style: GoogleFonts.poppins(
+                        '10 Soal • Pilihan Ganda • ${QuizProvider.secondsPerQuestion} detik/soal',
+                        style: TextStyle(
+                          fontFamily: AppFonts.body,
                           fontSize: r.s(12),
                           color: c.textMuted,
                           letterSpacing: 1.5,
@@ -154,13 +156,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         textCapitalization: TextCapitalization.words,
                         inputFormatters: [LengthLimitingTextInputFormatter(20)],
                         onSubmitted: (_) => _startQuiz(),
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: AppFonts.body,
                           color: c.textPrimary,
                           fontSize: r.s(16),
                         ),
                         decoration: InputDecoration(
                           hintText: 'Nama Spirit Master',
-                          hintStyle: GoogleFonts.poppins(
+                          hintStyle: TextStyle(
+                            fontFamily: AppFonts.body,
                             color: c.textMuted,
                             fontSize: r.s(16),
                           ),
@@ -170,13 +174,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             size: r.s(24),
                           ),
                           filled: true,
-                          fillColor: c.card.withOpacity(0.8),
+                          fillColor: c.card.withValues(alpha: 0.8),
                           contentPadding:
                               EdgeInsets.symmetric(vertical: r.s(20)),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(r.s(16)),
                             borderSide: BorderSide(
-                              color: c.accent.withOpacity(0.4),
+                              color: c.accent.withValues(alpha: 0.4),
                               width: 1.5,
                             ),
                           ),

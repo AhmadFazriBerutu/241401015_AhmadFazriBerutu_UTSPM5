@@ -7,9 +7,9 @@ class Responsive {
   factory Responsive.of(BuildContext context) =>
       Responsive._(MediaQuery.sizeOf(context));
 
-  static const double _maxContentWidth = 560; 
-  static const double _baseWidth = 390; 
-  static const double _baseHeight = 780; 
+  static const double _maxContentWidth = 560;
+  static const double _baseWidth = 390;
+  static const double _baseHeight = 780;
 
   final Size size;
 

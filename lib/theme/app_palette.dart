@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Palet warna aplikasi untuk mode gelap & terang.
-/// Dipakai lewat `context.colors`.
 @immutable
 class AppPalette extends ThemeExtension<AppPalette> {
   const AppPalette({
@@ -23,11 +21,11 @@ class AppPalette extends ThemeExtension<AppPalette> {
   });
 
   final bool isDark;
-  final Color bgEdge; // warna latar (tepi gradien)
-  final Color bgMid; // warna latar (tengah gradien)
-  final Color card; // kartu soal, input, dialog
-  final Color surface; // isi tombol
-  final Color accent; // emas (gelap) / amber tua (terang)
+  final Color bgEdge;
+  final Color bgMid;
+  final Color card;
+  final Color surface;
+  final Color accent;
   final Color textPrimary;
   final Color textSecondary;
   final Color textMuted;
@@ -62,7 +60,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     bgMid: Color(0xFFE2E8F0),
     card: Color(0xFFFFFFFF),
     surface: Color(0xFFFFFFFF),
-    accent: Color(0xFFB45309), // amber 700, kontras baik di latar terang
+    accent: Color(0xFFB45309),
     textPrimary: Color(0xFF0F172A),
     textSecondary: Color(0xFF334155),
     textMuted: Color(0xFF64748B),
@@ -74,7 +72,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
     posterOpacity: 0.25,
   );
 
-  /// Efek glow hanya dipakai di mode gelap.
   List<Shadow> glow(Color color, {double blur = 15}) =>
       isDark ? [Shadow(color: color, blurRadius: blur)] : const <Shadow>[];
 

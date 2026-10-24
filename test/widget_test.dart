@@ -3,8 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import 'package:aplikasi_kuis_pilihan_ganda/main.dart';
+import 'package:aplikasi_kuis_pilihan_ganda/models/rank.dart';
 import 'package:aplikasi_kuis_pilihan_ganda/providers/quiz_provider.dart';
 import 'package:aplikasi_kuis_pilihan_ganda/providers/theme_provider.dart';
+import 'package:aplikasi_kuis_pilihan_ganda/theme/app_palette.dart';
 
 Widget _buildApp() => MultiProvider(
       providers: [
@@ -26,12 +28,12 @@ void main() {
   testWidgets('Tombol tema berganti antara mode gelap dan terang',
       (tester) async {
     await tester.pumpWidget(_buildApp());
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.light_mode_outlined), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.light_mode_outlined));
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.dark_mode_outlined), findsOneWidget);
   });
@@ -54,5 +56,18 @@ void main() {
 
     expect(quiz.score, 0);
     expect(quiz.currentIndex, 1);
+  });
+
+  test('Rank sesuai skor kelipatan 10 dan semua tingkatan bisa dicapai', () {
+    const palette = AppPalette.dark;
+
+    expect(Rank.fromScore(0, palette).name, 'Soul Trainee');
+    expect(Rank.fromScore(20, palette).name, 'Soul Trainee');
+    expect(Rank.fromScore(30, palette).name, 'Soul Elder');
+    expect(Rank.fromScore(50, palette).name, 'Soul Elder');
+    expect(Rank.fromScore(60, palette).name, 'Soul Emperor');
+    expect(Rank.fromScore(80, palette).name, 'Soul Emperor');
+    expect(Rank.fromScore(90, palette).name, 'Titled Douluo');
+    expect(Rank.fromScore(100, palette).name, 'God');
   });
 }

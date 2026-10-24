@@ -5,6 +5,7 @@ import '../models/question.dart';
 
 class QuizProvider extends ChangeNotifier {
   static const int secondsPerQuestion = 20;
+  static const int pointsPerQuestion = 10;
   static const Duration _feedbackDelay = Duration(milliseconds: 600);
 
   String _userName = '';
@@ -40,6 +41,7 @@ class QuizProvider extends ChangeNotifier {
   bool get isFinished => _isFinished;
   List<Question> get questions => _questions;
   int get timeLeft => _timeLeft;
+  int get maxScore => _questions.length * pointsPerQuestion;
 
   int? get selectedOptionIndex => _selectedOptionIndex;
   bool? get isCorrectAnswer => _isCorrectAnswer;
@@ -50,25 +52,21 @@ class QuizProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Mulai kuis dari awal (dipakai tombol "Mulai Ujian" dan "Ulangi Ujian").
   void startQuiz() {
     _resetState();
     _startTimer();
     notifyListeners();
   }
 
-  /// Kembalikan semua ke awal tanpa menjalankan timer.
   void resetQuiz() {
     _resetState();
     notifyListeners();
   }
 
-  /// Jeda timer (mis. saat dialog keluar tampil).
   void pauseTimer() {
     _timer?.cancel();
   }
 
-  /// Lanjutkan timer setelah dijeda.
   void resumeTimer() {
     if (_isFinished || _isAnswerLocked || _timeLeft <= 0) return;
     _timer?.cancel();
@@ -120,7 +118,7 @@ class QuizProvider extends ChangeNotifier {
     HapticFeedback.lightImpact();
 
     if (_isCorrectAnswer!) {
-      _score += 10;
+      _score += pointsPerQuestion;
     } else {
       HapticFeedback.vibrate();
     }

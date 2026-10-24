@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'app_fonts.dart';
 import 'app_palette.dart';
 
 class AppTheme {
@@ -12,6 +12,7 @@ class AppTheme {
     final base = ThemeData(
       useMaterial3: true,
       brightness: brightness,
+      fontFamily: AppFonts.body,
       colorScheme: ColorScheme.fromSeed(
         seedColor: palette.accent,
         brightness: brightness,
@@ -21,9 +22,8 @@ class AppTheme {
 
     return base.copyWith(
       extensions: <ThemeExtension<dynamic>>[palette],
-      // Font dasar seluruh aplikasi: Poppins.
-      // Judul memakai GoogleFonts.cinzel di tiap layar.
-      textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).apply(
+      textTheme: base.textTheme.apply(
+        fontFamily: AppFonts.body,
         bodyColor: palette.textPrimary,
         displayColor: palette.textPrimary,
       ),
@@ -33,7 +33,8 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: palette.dangerBorder,
-        contentTextStyle: GoogleFonts.poppins(
+        contentTextStyle: const TextStyle(
+          fontFamily: AppFonts.body,
           color: Colors.white,
           fontWeight: FontWeight.w600,
         ),
