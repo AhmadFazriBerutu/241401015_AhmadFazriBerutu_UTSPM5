@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/quiz_provider.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../utils/page_routes.dart';
 import '../utils/responsive.dart';
 import '../widgets/custom_button.dart';
@@ -19,12 +19,32 @@ class _Rank {
 class ResultScreen extends StatelessWidget {
   const ResultScreen({Key? key}) : super(key: key);
 
-  _Rank _getRank(int score) {
-    if (score >= 100) return const _Rank('God', AppColors.gold);
-    if (score >= 91) return const _Rank('Titled Douluo', Colors.purpleAccent);
-    if (score >= 61) return const _Rank('Soul Emperor', AppColors.cyan);
-    if (score >= 31) return const _Rank('Soul Elder', Colors.lightBlueAccent);
-    return const _Rank('Soul Trainee', Colors.blueGrey);
+  // Warna rank menyesuaikan tema agar tetap terbaca di latar terang.
+  _Rank _getRank(int score, AppPalette c) {
+    final d = c.isDark;
+    if (score >= 100) return _Rank('God', c.accent);
+    if (score >= 91) {
+      return _Rank(
+        'Titled Douluo',
+        d ? Colors.purpleAccent : Colors.purple.shade700,
+      );
+    }
+    if (score >= 61) {
+      return _Rank(
+        'Soul Emperor',
+        d ? Colors.cyanAccent : Colors.cyan.shade800,
+      );
+    }
+    if (score >= 31) {
+      return _Rank(
+        'Soul Elder',
+        d ? Colors.lightBlueAccent : Colors.lightBlue.shade800,
+      );
+    }
+    return _Rank(
+      'Soul Trainee',
+      d ? Colors.blueGrey : Colors.blueGrey.shade600,
+    );
   }
 
   @override
@@ -33,7 +53,8 @@ class ResultScreen extends StatelessWidget {
     // saat tombol Ulangi/Kembali me-reset provider.
     final quizProvider = context.read<QuizProvider>();
     final r = Responsive.of(context);
-    final rank = _getRank(quizProvider.score);
+    final c = context.colors;
+    final rank = _getRank(quizProvider.score, c);
     final totalQuestions = quizProvider.questions.length;
     final correctAnswers = quizProvider.score ~/ 10;
 
@@ -65,15 +86,17 @@ class ResultScreen extends StatelessWidget {
                             style: GoogleFonts.cinzel(
                               fontSize: r.s(32),
                               fontWeight: FontWeight.w900,
-                              color: AppColors.textPrimary,
+                              color: c.textPrimary,
                               letterSpacing: r.s(3),
-                              shadows: const [
-                                Shadow(
-                                  color: Colors.black87,
-                                  blurRadius: 10,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
+                              shadows: c.isDark
+                                  ? const [
+                                      Shadow(
+                                        color: Colors.black87,
+                                        blurRadius: 10,
+                                        offset: Offset(2, 2),
+                                      ),
+                                    ]
+                                  : null,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -83,7 +106,7 @@ class ResultScreen extends StatelessWidget {
                           'UJIAN AKADEMI SELESAI',
                           style: GoogleFonts.poppins(
                             fontSize: r.s(12),
-                            color: AppColors.textMuted,
+                            color: c.textMuted,
                             letterSpacing: 4.0,
                             fontWeight: FontWeight.bold,
                           ),
@@ -108,7 +131,7 @@ class ResultScreen extends StatelessWidget {
                                     value: value / 100,
                                     strokeWidth: ringOuter * 0.045,
                                     backgroundColor:
-                                        Colors.white.withOpacity(0.1),
+                                        c.textPrimary.withOpacity(0.1),
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                       rank.color,
                                     ),
@@ -122,7 +145,7 @@ class ResultScreen extends StatelessWidget {
                                     gradient: RadialGradient(
                                       colors: [
                                         rank.color.withOpacity(0.2),
-                                        AppColors.bgDark,
+                                        c.bgEdge,
                                       ],
                                     ),
                                     boxShadow: [
@@ -139,13 +162,8 @@ class ResultScreen extends StatelessWidget {
                                       style: GoogleFonts.poppins(
                                         fontSize: ringOuter * 0.36,
                                         fontWeight: FontWeight.w900,
-                                        color: AppColors.textPrimary,
-                                        shadows: [
-                                          Shadow(
-                                            color: rank.color,
-                                            blurRadius: 15,
-                                          ),
-                                        ],
+                                        color: c.textPrimary,
+                                        shadows: c.glow(rank.color),
                                       ),
                                     ),
                                   ),
@@ -158,7 +176,7 @@ class ResultScreen extends StatelessWidget {
                         Text(
                           'Mencapai Tingkatan:',
                           style: GoogleFonts.poppins(
-                            color: AppColors.textMuted,
+                            color: c.textMuted,
                             fontSize: r.s(14),
                           ),
                         ),
@@ -172,9 +190,7 @@ class ResultScreen extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                               color: rank.color,
                               letterSpacing: r.s(2),
-                              shadows: [
-                                Shadow(color: rank.color, blurRadius: 15),
-                              ],
+                              shadows: c.glow(rank.color),
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -186,14 +202,14 @@ class ResultScreen extends StatelessWidget {
                             vertical: r.s(8),
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
+                            color: c.textPrimary.withOpacity(0.06),
                             borderRadius: BorderRadius.circular(r.s(20)),
                           ),
                           child: Text(
                             'Benar $correctAnswers dari $totalQuestions Soal',
                             style: GoogleFonts.poppins(
                               fontSize: r.s(14),
-                              color: AppColors.textSecondary,
+                              color: c.textSecondary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

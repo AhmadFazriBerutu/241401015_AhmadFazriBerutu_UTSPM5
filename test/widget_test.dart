@@ -1,30 +1,58 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
 import 'package:aplikasi_kuis_pilihan_ganda/main.dart';
+import 'package:aplikasi_kuis_pilihan_ganda/providers/quiz_provider.dart';
+import 'package:aplikasi_kuis_pilihan_ganda/providers/theme_provider.dart';
+
+Widget _buildApp() => MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => QuizProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: const MyApp(),
+    );
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('Home menampilkan judul dan tombol mulai', (tester) async {
+    await tester.pumpWidget(_buildApp());
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('SOUL LAND'), findsOneWidget);
+    expect(find.text('MULAI UJIAN'), findsOneWidget);
+  });
+
+  testWidgets('Tombol tema berganti antara mode gelap dan terang',
+      (tester) async {
+    await tester.pumpWidget(_buildApp());
+    await tester.pump();
+
+    expect(find.byIcon(Icons.light_mode_outlined), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.light_mode_outlined));
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.byIcon(Icons.dark_mode_outlined), findsOneWidget);
+  });
+
+  test('QuizProvider menambah skor 10 untuk jawaban benar', () async {
+    final quiz = QuizProvider();
+    final correct = quiz.questions[0].answerIndex;
+
+    await quiz.answerQuestion(correct);
+
+    expect(quiz.score, 10);
+    expect(quiz.currentIndex, 1);
+  });
+
+  test('QuizProvider tidak menambah skor untuk jawaban salah', () async {
+    final quiz = QuizProvider();
+    final wrong = (quiz.questions[0].answerIndex + 1) % 4;
+
+    await quiz.answerQuestion(wrong);
+
+    expect(quiz.score, 0);
+    expect(quiz.currentIndex, 1);
   });
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../utils/responsive.dart';
 
 class CustomButton extends StatelessWidget {
@@ -24,7 +24,16 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final r = Responsive.of(context);
+    final c = context.colors;
     final radius = BorderRadius.circular(r.s(16));
+
+    // Tombol berwarna umpan balik (hijau/merah) -> teks putih.
+    // Tombol transparan (outline) -> teks mengikuti tema.
+    final isFeedback =
+        overrideColor != null && overrideColor != Colors.transparent;
+    final textColor = isFeedback
+        ? Colors.white
+        : (overrideColor != null ? c.textPrimary : c.accent);
 
     return Center(
       child: ConstrainedBox(
@@ -32,7 +41,7 @@ class CustomButton extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: radius,
-          splashColor: AppColors.gold.withOpacity(0.3),
+          splashColor: c.accent.withOpacity(0.3),
           highlightColor: Colors.transparent,
           child: Container(
             width: double.infinity,
@@ -41,15 +50,15 @@ class CustomButton extends StatelessWidget {
               horizontal: r.s(20),
             ),
             decoration: BoxDecoration(
-              color: overrideColor ?? AppColors.surface.withOpacity(0.7),
+              color: overrideColor ?? c.surface.withOpacity(0.7),
               borderRadius: radius,
               border: Border.all(
-                color: overrideBorderColor ?? AppColors.gold.withOpacity(0.5),
+                color: overrideBorderColor ?? c.accent.withOpacity(0.5),
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -66,10 +75,8 @@ class CustomButton extends StatelessWidget {
                     height: r.s(32),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.gold.withOpacity(0.8),
-                      ),
-                      color: AppColors.bgMid,
+                      border: Border.all(color: c.accent.withOpacity(0.8)),
+                      color: c.card,
                     ),
                     child: Center(
                       child: Text(
@@ -77,7 +84,7 @@ class CustomButton extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: r.s(14),
                           fontWeight: FontWeight.bold,
-                          color: AppColors.gold,
+                          color: c.accent,
                         ),
                       ),
                     ),
@@ -85,7 +92,7 @@ class CustomButton extends StatelessWidget {
                   SizedBox(width: r.s(16)),
                 ],
                 if (icon != null) ...[
-                  Icon(icon, color: AppColors.gold, size: r.s(24)),
+                  Icon(icon, color: c.accent, size: r.s(24)),
                   SizedBox(width: r.s(12)),
                 ],
                 Expanded(
@@ -95,9 +102,7 @@ class CustomButton extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: r.s(15),
                       fontWeight: FontWeight.w600,
-                      color: overrideColor != null
-                          ? AppColors.textPrimary
-                          : AppColors.gold,
+                      color: textColor,
                       letterSpacing: 1.0,
                     ),
                     textAlign: prefixLabel != null

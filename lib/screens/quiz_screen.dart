@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/question.dart';
 import '../providers/quiz_provider.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../utils/page_routes.dart';
 import '../utils/responsive.dart';
 import '../widgets/custom_button.dart';
@@ -21,27 +21,28 @@ class QuizScreen extends StatelessWidget {
     QuizProvider quizProvider,
   ) async {
     final navigator = Navigator.of(context);
+    final c = context.colors;
     quizProvider.pauseTimer();
 
     final shouldExit = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgMid,
+        backgroundColor: c.card,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: AppColors.gold.withOpacity(0.5)),
+          side: BorderSide(color: c.accent.withOpacity(0.5)),
         ),
         title: Text(
           'Keluar dari ujian?',
           style: GoogleFonts.cinzel(
-            color: AppColors.gold,
+            color: c.accent,
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
           'Progres ujian kamu akan hilang dan skor di-reset.',
-          style: GoogleFonts.poppins(color: AppColors.textSecondary),
+          style: GoogleFonts.poppins(color: c.textSecondary),
         ),
         actions: [
           TextButton(
@@ -49,7 +50,7 @@ class QuizScreen extends StatelessWidget {
             child: Text(
               'LANJUTKAN',
               style: GoogleFonts.poppins(
-                color: AppColors.gold,
+                color: c.accent,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -59,7 +60,7 @@ class QuizScreen extends StatelessWidget {
             child: Text(
               'KELUAR',
               style: GoogleFonts.poppins(
-                color: AppColors.dangerBorder,
+                color: c.dangerBorder,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -83,6 +84,8 @@ class QuizScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<QuizProvider>(
       builder: (context, quizProvider, child) {
+        final c = context.colors;
+
         if (quizProvider.isFinished) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushReplacement(
@@ -93,10 +96,10 @@ class QuizScreen extends StatelessWidget {
               ),
             );
           });
-          return const Scaffold(
-            backgroundColor: AppColors.bgDark,
+          return Scaffold(
+            backgroundColor: c.bgEdge,
             body: Center(
-              child: CircularProgressIndicator(color: AppColors.gold),
+              child: CircularProgressIndicator(color: c.accent),
             ),
           );
         }
@@ -123,14 +126,15 @@ class QuizScreen extends StatelessWidget {
                   final compact = constraints.maxHeight < r.s(740);
                   final gap = compact ? r.s(20) : r.s(40);
 
-                  final header = _buildHeader(quizProvider, progress, r);
+                  final header = _buildHeader(quizProvider, progress, r, c);
                   final card = _buildQuestionCard(
                     quizProvider,
                     currentQ,
                     r,
+                    c,
                     compact: compact,
                   );
-                  final options = _buildOptions(quizProvider, currentQ, r);
+                  final options = _buildOptions(quizProvider, currentQ, r, c);
 
                   final Widget content = compact
                       ? SingleChildScrollView(
@@ -177,10 +181,10 @@ class QuizScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTimer(QuizProvider quizProvider, Responsive r) {
+  Widget _buildTimer(QuizProvider quizProvider, Responsive r, AppPalette c) {
     final fraction = quizProvider.timeLeft / QuizProvider.secondsPerQuestion;
     final urgent = quizProvider.timeLeft <= 5;
-    final color = urgent ? AppColors.dangerBorder : AppColors.gold;
+    final color = urgent ? c.dangerBorder : c.accent;
 
     return SizedBox(
       width: r.s(46),
@@ -192,7 +196,7 @@ class QuizScreen extends StatelessWidget {
             child: CircularProgressIndicator(
               value: fraction,
               strokeWidth: 4,
-              backgroundColor: Colors.white.withOpacity(0.1),
+              backgroundColor: c.textPrimary.withOpacity(0.1),
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),
@@ -213,6 +217,7 @@ class QuizScreen extends StatelessWidget {
     QuizProvider quizProvider,
     double progress,
     Responsive r,
+    AppPalette c,
   ) {
     return [
       Row(
@@ -222,7 +227,7 @@ class QuizScreen extends StatelessWidget {
             child: Text(
               'PERTANYAAN ${quizProvider.currentIndex + 1}/${quizProvider.questions.length}',
               style: GoogleFonts.poppins(
-                color: AppColors.gold,
+                color: c.accent,
                 fontSize: r.s(14),
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
@@ -230,7 +235,7 @@ class QuizScreen extends StatelessWidget {
             ),
           ),
           SizedBox(width: r.s(12)),
-          _buildTimer(quizProvider, r),
+          _buildTimer(quizProvider, r, c),
         ],
       ),
       SizedBox(height: r.s(16)),
@@ -238,8 +243,8 @@ class QuizScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: LinearProgressIndicator(
           value: progress,
-          backgroundColor: Colors.white.withOpacity(0.1),
-          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+          backgroundColor: c.textPrimary.withOpacity(0.1),
+          valueColor: AlwaysStoppedAnimation<Color>(c.accent),
           minHeight: r.s(8),
         ),
       ),
@@ -249,7 +254,8 @@ class QuizScreen extends StatelessWidget {
   Widget _buildQuestionCard(
     QuizProvider quizProvider,
     Question currentQ,
-    Responsive r, {
+    Responsive r,
+    AppPalette c, {
     required bool compact,
   }) {
     return AnimatedSwitcher(
@@ -284,12 +290,12 @@ class QuizScreen extends StatelessWidget {
         constraints: BoxConstraints(minHeight: r.s(180)),
         clipBehavior: Clip.antiAlias, // watermark terpotong di tepi kartu
         decoration: BoxDecoration(
-          color: AppColors.bgMid.withOpacity(0.8),
+          color: c.card.withOpacity(0.85),
           borderRadius: BorderRadius.circular(r.s(24)),
-          border: Border.all(color: AppColors.gold.withOpacity(0.3)),
+          border: Border.all(color: c.accent.withOpacity(0.35)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.5),
+              color: c.shadow,
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -304,7 +310,7 @@ class QuizScreen extends StatelessWidget {
                 '${quizProvider.currentIndex + 1}',
                 style: GoogleFonts.cinzel(
                   fontSize: r.s(120),
-                  color: Colors.white.withOpacity(0.05),
+                  color: c.textPrimary.withOpacity(0.05),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -317,7 +323,7 @@ class QuizScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: r.s(20),
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: c.textPrimary,
                     height: 1.5,
                   ),
                   textAlign: TextAlign.center,
@@ -334,6 +340,7 @@ class QuizScreen extends StatelessWidget {
     QuizProvider quizProvider,
     Question currentQ,
     Responsive r,
+    AppPalette c,
   ) {
     return List.generate(currentQ.options.length, (index) {
       Color? btnColor;
@@ -341,11 +348,11 @@ class QuizScreen extends StatelessWidget {
 
       if (quizProvider.isAnswerLocked) {
         if (index == currentQ.answerIndex) {
-          btnColor = AppColors.success.withOpacity(0.8);
-          borderColor = AppColors.successBorder;
+          btnColor = c.success.withOpacity(0.85);
+          borderColor = c.successBorder;
         } else if (index == quizProvider.selectedOptionIndex) {
-          btnColor = AppColors.danger.withOpacity(0.8);
-          borderColor = AppColors.dangerBorder;
+          btnColor = c.danger.withOpacity(0.85);
+          borderColor = c.dangerBorder;
         }
       }
 
