@@ -5,7 +5,7 @@ import '../utils/responsive.dart';
 class AppBackground extends StatelessWidget {
   final Widget child;
 
-  const AppBackground({Key? key, required this.child}) : super(key: key);
+  const AppBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,6 @@ class AppBackground extends StatelessWidget {
               opacity: c.posterOpacity,
               child: Image.asset(
                 'assets/images/poster.jpg',
-                // Tinggi poster = 50% tinggi layar (dibatasi)
                 height: r.hp(0.5).clamp(240.0, 520.0).toDouble(),
                 width: double.infinity,
                 fit: BoxFit.cover,

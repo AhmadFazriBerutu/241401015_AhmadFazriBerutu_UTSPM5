@@ -4,9 +4,8 @@ import '../providers/theme_provider.dart';
 import '../theme/app_palette.dart';
 import '../utils/responsive.dart';
 
-/// Tombol bulat untuk berganti mode terang / gelap.
 class ThemeToggleButton extends StatelessWidget {
-  const ThemeToggleButton({Key? key}) : super(key: key);
+  const ThemeToggleButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +15,9 @@ class ThemeToggleButton extends StatelessWidget {
     return Tooltip(
       message: c.isDark ? 'Mode terang' : 'Mode gelap',
       child: Material(
-        color: c.surface.withOpacity(0.7),
+        color: c.surface.withValues(alpha: 0.7),
         shape: CircleBorder(
-          side: BorderSide(color: c.accent.withOpacity(0.5)),
+          side: BorderSide(color: c.accent.withValues(alpha: 0.5)),
         ),
         child: InkWell(
           customBorder: const CircleBorder(),

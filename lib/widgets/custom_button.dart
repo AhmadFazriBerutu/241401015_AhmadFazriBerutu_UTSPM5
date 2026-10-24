@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_fonts.dart';
 import '../theme/app_palette.dart';
 import '../utils/responsive.dart';
 
@@ -12,14 +12,14 @@ class CustomButton extends StatelessWidget {
   final Color? overrideBorderColor;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.icon,
     this.prefixLabel,
     this.overrideColor,
     this.overrideBorderColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,6 @@ class CustomButton extends StatelessWidget {
     final c = context.colors;
     final radius = BorderRadius.circular(r.s(16));
 
-    // Tombol berwarna umpan balik (hijau/merah) -> teks putih.
-    // Tombol transparan (outline) -> teks mengikuti tema.
     final isFeedback =
         overrideColor != null && overrideColor != Colors.transparent;
     final textColor = isFeedback
@@ -41,7 +39,7 @@ class CustomButton extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: radius,
-          splashColor: c.accent.withOpacity(0.3),
+          splashColor: c.accent.withValues(alpha: 0.3),
           highlightColor: Colors.transparent,
           child: Container(
             width: double.infinity,
@@ -50,17 +48,17 @@ class CustomButton extends StatelessWidget {
               horizontal: r.s(20),
             ),
             decoration: BoxDecoration(
-              color: overrideColor ?? c.surface.withOpacity(0.7),
+              color: overrideColor ?? c.surface.withValues(alpha: 0.7),
               borderRadius: radius,
               border: Border.all(
-                color: overrideBorderColor ?? c.accent.withOpacity(0.5),
+                color: overrideBorderColor ?? c.accent.withValues(alpha: 0.5),
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
                   color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+                  blurRadius: r.s(8),
+                  offset: Offset(0, r.s(4)),
                 ),
               ],
             ),
@@ -75,13 +73,15 @@ class CustomButton extends StatelessWidget {
                     height: r.s(32),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: c.accent.withOpacity(0.8)),
+                      border:
+                          Border.all(color: c.accent.withValues(alpha: 0.8)),
                       color: c.card,
                     ),
                     child: Center(
                       child: Text(
                         prefixLabel!,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
+                          fontFamily: AppFonts.body,
                           fontSize: r.s(14),
                           fontWeight: FontWeight.bold,
                           color: c.accent,
@@ -99,15 +99,15 @@ class CustomButton extends StatelessWidget {
                   flex: prefixLabel != null ? 1 : 0,
                   child: Text(
                     text,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
+                      fontFamily: AppFonts.body,
                       fontSize: r.s(15),
                       fontWeight: FontWeight.w600,
                       color: textColor,
                       letterSpacing: 1.0,
                     ),
-                    textAlign: prefixLabel != null
-                        ? TextAlign.left
-                        : TextAlign.center,
+                    textAlign:
+                        prefixLabel != null ? TextAlign.left : TextAlign.center,
                   ),
                 ),
               ],
