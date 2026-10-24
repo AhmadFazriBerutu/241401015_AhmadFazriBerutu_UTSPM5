@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
+import '../utils/responsive.dart';
 
 class AppBackground extends StatelessWidget {
   final Widget child;
-  
+
   const AppBackground({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final r = Responsive.of(context);
+
     return Container(
       width: double.infinity,
       height: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF070B19), Color(0xFF0F172A), Color(0xFF070B19)],
+          colors: [AppColors.bgDark, AppColors.bgMid, AppColors.bgDark],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -33,7 +37,7 @@ class AppBackground extends StatelessWidget {
               opacity: 0.4,
               child: Image.asset(
                 'assets/images/poster.jpg',
-                height: 450,
+                height: r.hp(0.5).clamp(240.0, 520.0).toDouble(),
                 width: double.infinity,
                 fit: BoxFit.cover,
                 alignment: const Alignment(0.0, -0.4),

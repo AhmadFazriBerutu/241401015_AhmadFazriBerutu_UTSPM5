@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_colors.dart';
+import '../utils/responsive.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -21,22 +23,28 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final r = Responsive.of(context);
+    final radius = BorderRadius.circular(r.s(16));
+
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 420),
+        constraints: BoxConstraints(maxWidth: r.contentWidth),
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(16),
-          splashColor: Colors.amberAccent.withOpacity(0.3),
+          borderRadius: radius,
+          splashColor: AppColors.gold.withOpacity(0.3),
           highlightColor: Colors.transparent,
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+            padding: EdgeInsets.symmetric(
+              vertical: r.s(18),
+              horizontal: r.s(20),
+            ),
             decoration: BoxDecoration(
-              color: overrideColor ?? const Color(0xFF1E293B).withOpacity(0.7),
-              borderRadius: BorderRadius.circular(16),
+              color: overrideColor ?? AppColors.surface.withOpacity(0.7),
+              borderRadius: radius,
               border: Border.all(
-                color: overrideBorderColor ?? Colors.amberAccent.withOpacity(0.5),
+                color: overrideBorderColor ?? AppColors.gold.withOpacity(0.5),
                 width: 1.5,
               ),
               boxShadow: [
@@ -48,44 +56,53 @@ class CustomButton extends StatelessWidget {
               ],
             ),
             child: Row(
-              mainAxisAlignment: prefixLabel != null ? MainAxisAlignment.start : MainAxisAlignment.center,
+              mainAxisAlignment: prefixLabel != null
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.center,
               children: [
                 if (prefixLabel != null) ...[
                   Container(
-                    width: 32,
-                    height: 32,
+                    width: r.s(32),
+                    height: r.s(32),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.amberAccent.withOpacity(0.8)),
-                      color: const Color(0xFF0F172A),
+                      border: Border.all(
+                        color: AppColors.gold.withOpacity(0.8),
+                      ),
+                      color: AppColors.bgMid,
                     ),
                     child: Center(
                       child: Text(
                         prefixLabel!,
                         style: GoogleFonts.poppins(
+                          fontSize: r.s(14),
                           fontWeight: FontWeight.bold,
-                          color: Colors.amberAccent,
+                          color: AppColors.gold,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: r.s(16)),
                 ],
                 if (icon != null) ...[
-                  Icon(icon, color: Colors.amberAccent, size: 24),
-                  const SizedBox(width: 12),
+                  Icon(icon, color: AppColors.gold, size: r.s(24)),
+                  SizedBox(width: r.s(12)),
                 ],
                 Expanded(
                   flex: prefixLabel != null ? 1 : 0,
                   child: Text(
                     text,
                     style: GoogleFonts.poppins(
-                      fontSize: 15,
+                      fontSize: r.s(15),
                       fontWeight: FontWeight.w600,
-                      color: overrideColor != null ? Colors.white : Colors.amberAccent,
+                      color: overrideColor != null
+                          ? AppColors.textPrimary
+                          : AppColors.gold,
                       letterSpacing: 1.0,
                     ),
-                    textAlign: prefixLabel != null ? TextAlign.left : TextAlign.center,
+                    textAlign: prefixLabel != null
+                        ? TextAlign.left
+                        : TextAlign.center,
                   ),
                 ),
               ],

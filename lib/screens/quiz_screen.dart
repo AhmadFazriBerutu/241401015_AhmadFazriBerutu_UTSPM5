@@ -1,13 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../models/question.dart';
 import '../providers/quiz_provider.dart';
+import '../theme/app_colors.dart';
+import '../utils/page_routes.dart';
+import '../utils/responsive.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/app_background.dart';
+import 'home_screen.dart';
 import 'result_screen.dart';
 
 class QuizScreen extends StatelessWidget {
   const QuizScreen({Key? key}) : super(key: key);
+
+  static const List<String> _letters = ['A', 'B', 'C', 'D'];
+
+  Future<void> _confirmExit(
+    BuildContext context,
+    QuizProvider quizProvider,
+  ) async {
+    final navigator = Navigator.of(context);
+    quizProvider.pauseTimer();
+
+    final shouldExit = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.bgMid,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: AppColors.gold.withOpacity(0.5)),
+        ),
+        title: Text(
+          'Keluar dari ujian?',
+          style: GoogleFonts.cinzel(
+            color: AppColors.gold,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'Progres ujian kamu akan hilang dan skor di-reset.',
+          style: GoogleFonts.poppins(color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              'LANJUTKAN',
+              style: GoogleFonts.poppins(
+                color: AppColors.gold,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(
+              'KELUAR',
+              style: GoogleFonts.poppins(
+                color: AppColors.dangerBorder,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldExit == true) {
+      quizProvider.resetQuiz();
+      navigator.pushAndRemoveUntil(
+        fadeRoute(const HomeScreen()),
+        (route) => false,
+      );
+    } else {
+      quizProvider.resumeTimer();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,136 +87,278 @@ class QuizScreen extends StatelessWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushReplacement(
               context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 800),
-                pageBuilder: (_, __, ___) => const ResultScreen(),
-                transitionsBuilder: (_, animation, __, child) => FadeTransition(opacity: animation, child: child),
+              fadeRoute(
+                const ResultScreen(),
+                duration: const Duration(milliseconds: 800),
               ),
             );
           });
           return const Scaffold(
-            backgroundColor: Color(0xFF070B19),
-            body: Center(child: CircularProgressIndicator(color: Colors.amberAccent)),
+            backgroundColor: AppColors.bgDark,
+            body: Center(
+              child: CircularProgressIndicator(color: AppColors.gold),
+            ),
           );
         }
 
+        final r = Responsive.of(context);
         final currentQ = quizProvider.questions[quizProvider.currentIndex];
-        final progress = (quizProvider.currentIndex + 1) / quizProvider.questions.length;
-        final alphabet = ['A', 'B', 'C', 'D'];
+        final progress =
+            (quizProvider.currentIndex + 1) / quizProvider.questions.length;
 
-        return Scaffold(
-          body: AppBackground(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'PERTANYAAN ${quizProvider.currentIndex + 1}/${quizProvider.questions.length}',
-                        style: GoogleFonts.poppins(color: Colors.amberAccent, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-                      ),
-                      const Icon(Icons.timer_outlined, color: Colors.blueGrey, size: 24),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      backgroundColor: Colors.white.withOpacity(0.1),
-                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.amberAccent),
-                      minHeight: 8,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Expanded(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 500),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: SlideTransition(
-                            position: Tween<Offset>(begin: const Offset(0.0, 0.1), end: Offset.zero).animate(animation),
-                            child: child,
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            // Abaikan saat jeda umpan balik jawaban.
+            if (quizProvider.isAnswerLocked) return;
+            _confirmExit(context, quizProvider);
+          },
+          child: Scaffold(
+            body: AppBackground(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // Konten butuh kira-kira 740 satuan skala; jika ruang
+                  // kurang, halaman dibuat bisa di-scroll.
+                  final compact = constraints.maxHeight < r.s(740);
+                  final gap = compact ? r.s(20) : r.s(40);
+
+                  final header = _buildHeader(quizProvider, progress, r);
+                  final card = _buildQuestionCard(
+                    quizProvider,
+                    currentQ,
+                    r,
+                    compact: compact,
+                  );
+                  final options = _buildOptions(quizProvider, currentQ, r);
+
+                  final Widget content = compact
+                      ? SingleChildScrollView(
+                          padding: EdgeInsets.all(r.s(24)),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ...header,
+                              SizedBox(height: gap),
+                              card,
+                              SizedBox(height: gap),
+                              ...options,
+                            ],
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.all(r.s(24)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ...header,
+                              SizedBox(height: gap),
+                              Expanded(child: card),
+                              SizedBox(height: gap),
+                              ...options,
+                            ],
                           ),
                         );
-                      },
-                      child: Container(
-                        key: ValueKey<int>(quizProvider.currentIndex),
-                        padding: const EdgeInsets.all(32.0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF0F172A).withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: Colors.amberAccent.withOpacity(0.3)),
-                          boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20, offset: const Offset(0, 10)),
-                          ],
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Positioned(
-                              top: -20,
-                              right: -20,
-                              child: Text(
-                                '${quizProvider.currentIndex + 1}',
-                                style: GoogleFonts.cinzel(
-                                  fontSize: 120,
-                                  color: Colors.white.withOpacity(0.05),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            SingleChildScrollView(
-                              child: Text(
-                                currentQ.text,
-                                style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white, height: 1.5),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+
+                  // Tablet / web: konten dibatasi dan diletakkan di tengah.
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: r.contentWidth),
+                      child: content,
                     ),
-                  ),
-                  const SizedBox(height: 40),
-                  ...List.generate(
-                    currentQ.options.length,
-                    (index) {
-                      Color? btnColor;
-                      Color? borderColor;
-
-                      if (quizProvider.isAnswerLocked) {
-                        if (index == currentQ.answerIndex) {
-                          btnColor = Colors.green.withOpacity(0.8);
-                          borderColor = Colors.greenAccent;
-                        } else if (index == quizProvider.selectedOptionIndex) {
-                          btnColor = Colors.red.withOpacity(0.8);
-                          borderColor = Colors.redAccent;
-                        }
-                      }
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: CustomButton(
-                          prefixLabel: alphabet[index],
-                          text: currentQ.options[index],
-                          overrideColor: btnColor,
-                          overrideBorderColor: borderColor,
-                          onPressed: () => quizProvider.answerQuestion(index),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ),
         );
       },
     );
+  }
+
+  Widget _buildTimer(QuizProvider quizProvider, Responsive r) {
+    final fraction = quizProvider.timeLeft / QuizProvider.secondsPerQuestion;
+    final urgent = quizProvider.timeLeft <= 5;
+    final color = urgent ? AppColors.dangerBorder : AppColors.gold;
+
+    return SizedBox(
+      width: r.s(46),
+      height: r.s(46),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: CircularProgressIndicator(
+              value: fraction,
+              strokeWidth: 4,
+              backgroundColor: Colors.white.withOpacity(0.1),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          ),
+          Text(
+            '${quizProvider.timeLeft}',
+            style: GoogleFonts.poppins(
+              color: color,
+              fontSize: r.s(14),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildHeader(
+    QuizProvider quizProvider,
+    double progress,
+    Responsive r,
+  ) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Text(
+              'PERTANYAAN ${quizProvider.currentIndex + 1}/${quizProvider.questions.length}',
+              style: GoogleFonts.poppins(
+                color: AppColors.gold,
+                fontSize: r.s(14),
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+              ),
+            ),
+          ),
+          SizedBox(width: r.s(12)),
+          _buildTimer(quizProvider, r),
+        ],
+      ),
+      SizedBox(height: r.s(16)),
+      ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: LinearProgressIndicator(
+          value: progress,
+          backgroundColor: Colors.white.withOpacity(0.1),
+          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+          minHeight: r.s(8),
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildQuestionCard(
+    QuizProvider quizProvider,
+    Question currentQ,
+    Responsive r, {
+    required bool compact,
+  }) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 500),
+      // StackFit.expand: kartu mengisi seluruh ruang Expanded (layar normal).
+      // StackFit.loose: kartu mengikuti tinggi minimum (mode scroll).
+      layoutBuilder: (currentChild, previousChildren) {
+        return Stack(
+          alignment: Alignment.center,
+          fit: compact ? StackFit.loose : StackFit.expand,
+          children: [
+            ...previousChildren,
+            if (currentChild != null) currentChild,
+          ],
+        );
+      },
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.0, 0.1),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        );
+      },
+      child: Container(
+        key: ValueKey<int>(quizProvider.currentIndex),
+        width: double.infinity,
+        constraints: BoxConstraints(minHeight: r.s(180)),
+        clipBehavior: Clip.antiAlias, // watermark terpotong di tepi kartu
+        decoration: BoxDecoration(
+          color: AppColors.bgMid.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(r.s(24)),
+          border: Border.all(color: AppColors.gold.withOpacity(0.3)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.5),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: -r.s(20),
+              right: -r.s(10),
+              child: Text(
+                '${quizProvider.currentIndex + 1}',
+                style: GoogleFonts.cinzel(
+                  fontSize: r.s(120),
+                  color: Colors.white.withOpacity(0.05),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(r.s(28)),
+              child: Center(
+                child: Text(
+                  currentQ.text,
+                  style: GoogleFonts.poppins(
+                    fontSize: r.s(20),
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    height: 1.5,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildOptions(
+    QuizProvider quizProvider,
+    Question currentQ,
+    Responsive r,
+  ) {
+    return List.generate(currentQ.options.length, (index) {
+      Color? btnColor;
+      Color? borderColor;
+
+      if (quizProvider.isAnswerLocked) {
+        if (index == currentQ.answerIndex) {
+          btnColor = AppColors.success.withOpacity(0.8);
+          borderColor = AppColors.successBorder;
+        } else if (index == quizProvider.selectedOptionIndex) {
+          btnColor = AppColors.danger.withOpacity(0.8);
+          borderColor = AppColors.dangerBorder;
+        }
+      }
+
+      return Padding(
+        padding: EdgeInsets.only(bottom: r.s(16)),
+        child: CustomButton(
+          prefixLabel: _letters[index],
+          text: currentQ.options[index],
+          overrideColor: btnColor,
+          overrideBorderColor: borderColor,
+          onPressed: () => quizProvider.answerQuestion(index),
+        ),
+      );
+    });
   }
 }
