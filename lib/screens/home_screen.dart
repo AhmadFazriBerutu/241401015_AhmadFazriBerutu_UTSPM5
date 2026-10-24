@@ -52,7 +52,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.auto_awesome, size: 80, color: Colors.amberAccent),
+                        Image.asset(
+                          'assets/images/logo_shrek.jpg',
+                          height: 180,
+                          fit: BoxFit.contain,
+                        ),
                         const SizedBox(height: 16),
                         const Text(
                           "SOUL LAND",
