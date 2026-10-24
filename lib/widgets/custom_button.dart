@@ -23,17 +23,17 @@ class CustomButton extends StatelessWidget {
       width: buttonWidth,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.8), Colors.black.withOpacity(0.4)],
+          borderRadius: BorderRadius.circular(16),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF16222A), Color(0xFF3A6073)],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
-          border: Border.all(color: Colors.amberAccent, width: 1.5),
+          border: Border.all(color: Colors.amberAccent.withOpacity(0.8), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Colors.amberAccent.withOpacity(0.3),
-              blurRadius: 8,
+              color: Colors.black.withOpacity(0.5),
+              blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
@@ -42,9 +42,9 @@ class CustomButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
             ),
           ),
           onPressed: onPressed,
@@ -52,9 +52,9 @@ class CustomButton extends StatelessWidget {
             text,
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
               color: textColor ?? Colors.amberAccent,
-              letterSpacing: 1.2,
+              letterSpacing: 1.5,
             ),
             textAlign: TextAlign.center,
           ),

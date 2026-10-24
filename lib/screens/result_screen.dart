@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
@@ -14,89 +13,102 @@ class ResultScreen extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF0F2027),
-          image: DecorationImage(
-            image: const AssetImage('assets/images/poster.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.3), BlendMode.darken),
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF09090E), Color(0xFF111D3B), Color(0xFF09090E)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: const DecorationImage(
+                    image: AssetImage('assets/images/poster.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.cyanAccent.withOpacity(0.2),
+                      blurRadius: 30,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0A0F24).withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.amberAccent, width: 2),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.military_tech,
-                            size: 100, color: Colors.amberAccent),
-                        const SizedBox(height: 24),
-                        Text(
-                          'Luar Biasa,\n${quizProvider.userName}!',
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Kekuatan Spiritual Anda:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          '${quizProvider.score} / 100',
-                          style: const TextStyle(
-                            fontSize: 64,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.amberAccent,
-                            shadows: [
-                              Shadow(
-                                  color: Colors.black,
-                                  blurRadius: 10,
-                                  offset: Offset(2, 2)),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 40),
-                        CustomButton(
-                          text: 'Kembali ke Akademi',
-                          onPressed: () {
-                            quizProvider.resetQuiz();
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeScreen()),
-                              (route) => false,
-                            );
-                          },
-                        ),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        const Color(0xFF09090E).withOpacity(0.8),
+                        const Color(0xFF09090E),
                       ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
                 ),
               ),
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'SELESAI,\n${quizProvider.userName.toUpperCase()}!',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.amberAccent,
+                          letterSpacing: 2.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Kekuatan Spiritual Akhir:',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blueGrey,
+                          letterSpacing: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        '${quizProvider.score}',
+                        style: const TextStyle(
+                          fontSize: 100,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(color: Colors.cyanAccent, blurRadius: 40),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      CustomButton(
+                        text: 'KEMBALI KE AKADEMI',
+                        onPressed: () {
+                          quizProvider.resetQuiz();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            (route) => false,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

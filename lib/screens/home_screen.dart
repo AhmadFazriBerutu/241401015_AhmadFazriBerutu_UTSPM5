@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
@@ -25,110 +24,115 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF0F2027),
-          image: DecorationImage(
-            image: const AssetImage('assets/images/poster.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF09090E), Color(0xFF111D3B), Color(0xFF09090E)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 140,
+                  height: 140,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0A0F24).withOpacity(0.65),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.amberAccent.withOpacity(0.5), width: 1.5),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.amberAccent, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.amberAccent.withOpacity(0.3),
+                        blurRadius: 30,
+                        spreadRadius: 5,
+                      ),
+                    ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/logo_shrek.jpg',
-                          height: 180,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          "SOUL LAND",
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.amberAccent,
-                            letterSpacing: 3.0,
-                            shadows: [
-                              Shadow(color: Colors.black, blurRadius: 10, offset: Offset(2, 2)),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          "Ujian Akademi Shrek",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            letterSpacing: 1.5,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 40),
-                        TextField(
-                          controller: _nameController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            labelText: 'Nama Spirit Master',
-                            labelStyle: const TextStyle(color: Colors.amberAccent),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Colors.amberAccent.withOpacity(0.5)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Colors.amberAccent, width: 2),
-                            ),
-                            prefixIcon: const Icon(Icons.person, color: Colors.amberAccent),
-                            filled: true,
-                            fillColor: Colors.black.withOpacity(0.5),
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        CustomButton(
-                          text: 'Mulai Ujian',
-                          onPressed: () {
-                            if (_nameController.text.trim().isNotEmpty) {
-                              context.read<QuizProvider>().setUserName(_nameController.text.trim());
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const QuizScreen(),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Nama tidak boleh kosong!'),
-                                  backgroundColor: Colors.redAccent,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ],
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/logo_shrek.jpg',
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 32),
+                const Text(
+                  "SOUL LAND",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 6.0,
+                    shadows: [
+                      Shadow(color: Colors.amberAccent, blurRadius: 20),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: Colors.blueGrey.withOpacity(0.5)),
+                  ),
+                  child: const Text(
+                    "UJIAN AKADEMI SHREK",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.cyanAccent,
+                      letterSpacing: 3.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 60),
+                TextField(
+                  controller: _nameController,
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    hintText: 'Masukkan Nama Anda',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.amberAccent.withOpacity(0.5), width: 2),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.amberAccent, width: 3),
+                    ),
+                    filled: false,
+                  ),
+                ),
+                const SizedBox(height: 48),
+                CustomButton(
+                  text: 'MULAI UJIAN',
+                  onPressed: () {
+                    if (_nameController.text.trim().isNotEmpty) {
+                      context.read<QuizProvider>().setUserName(_nameController.text.trim());
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const QuizScreen(),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Nama tidak boleh kosong!'),
+                          backgroundColor: Colors.redAccent,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),

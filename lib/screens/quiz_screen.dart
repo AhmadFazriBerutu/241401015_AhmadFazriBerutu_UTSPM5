@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
@@ -20,21 +19,24 @@ class QuizScreen extends StatelessWidget {
             );
           });
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            backgroundColor: Color(0xFF09090E),
+            body: Center(child: CircularProgressIndicator(color: Colors.amberAccent)),
           );
         }
 
         final currentQ = quizProvider.questions[quizProvider.currentIndex];
+        final progress = (quizProvider.currentIndex + 1) / quizProvider.questions.length;
 
         return Scaffold(
-          extendBodyBehindAppBar: true,
+          backgroundColor: const Color(0xFF09090E),
           appBar: AppBar(
             title: Text(
-              'Ujian Ke-${quizProvider.currentIndex + 1} / ${quizProvider.questions.length}',
+              'PERTANYAAN ${quizProvider.currentIndex + 1} / ${quizProvider.questions.length}',
               style: const TextStyle(
-                color: Colors.amberAccent, 
-                fontWeight: FontWeight.bold,
-                shadows: [Shadow(color: Colors.black, blurRadius: 8)],
+                color: Colors.blueGrey, 
+                fontSize: 14, 
+                letterSpacing: 2.0, 
+                fontWeight: FontWeight.bold
               ),
             ),
             centerTitle: true,
@@ -42,74 +44,82 @@ class QuizScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
-          body: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF0F2027),
-              image: DecorationImage(
-                image: const AssetImage('assets/images/poster.jpg'),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.darken),
-              ),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    LinearProgressIndicator(
-                      value: (quizProvider.currentIndex + 1) / quizProvider.questions.length,
-                      backgroundColor: Colors.white24,
-                      color: Colors.amberAccent,
-                      minHeight: 6,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    const SizedBox(height: 32),
-                    Expanded(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        height: 8,
+                        width: MediaQuery.of(context).size.width * progress,
+                        decoration: BoxDecoration(
+                          color: Colors.cyanAccent,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.cyanAccent, blurRadius: 10),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(32.0),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF111D3B),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.blueGrey.withOpacity(0.3)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
                       child: Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Container(
-                              padding: const EdgeInsets.all(24.0),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF0A0F24).withOpacity(0.65),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.amberAccent.withOpacity(0.5), width: 1.5),
-                              ),
-                              child: SingleChildScrollView(
-                                child: Text(
-                                  currentQ.text,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    height: 1.5,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                        child: SingleChildScrollView(
+                          child: Text(
+                            currentQ.text,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              height: 1.6,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    ...List.generate(
-                      currentQ.options.length,
-                      (index) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: CustomButton(
-                          text: currentQ.options[index],
-                          onPressed: () {
-                            quizProvider.answerQuestion(index);
-                          },
-                        ),
+                  ),
+                  const SizedBox(height: 40),
+                  ...List.generate(
+                    currentQ.options.length,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: CustomButton(
+                        text: currentQ.options[index],
+                        textColor: Colors.white,
+                        onPressed: () {
+                          quizProvider.answerQuestion(index);
+                        },
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
