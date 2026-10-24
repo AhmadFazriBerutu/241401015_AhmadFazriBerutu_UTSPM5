@@ -7,9 +7,26 @@ import 'home_screen.dart';
 class ResultScreen extends StatelessWidget {
   const ResultScreen({Key? key}) : super(key: key);
 
+  String _getSoulRank(int score) {
+    if (score >= 100) return 'God';
+    if (score >= 99) return 'Limit Douluo';
+    if (score >= 95) return 'Super Douluo';
+    if (score >= 91) return 'Titled Douluo';
+    if (score >= 81) return 'Soul Douluo';
+    if (score >= 71) return 'Soul Saint';
+    if (score >= 61) return 'Soul Emperor';
+    if (score >= 51) return 'Soul King';
+    if (score >= 41) return 'Soul Ancestor';
+    if (score >= 31) return 'Soul Elder';
+    if (score >= 21) return 'Soul Grand Master';
+    if (score >= 11) return 'Soul Master';
+    return 'Soul Trainee';
+  }
+
   @override
   Widget build(BuildContext context) {
     final quizProvider = context.watch<QuizProvider>();
+    final rankName = _getSoulRank(quizProvider.score);
 
     return Scaffold(
       body: Container(
@@ -36,7 +53,7 @@ class ResultScreen extends StatelessWidget {
                 },
                 blendMode: BlendMode.dstIn,
                 child: Container(
-                  height: 320,
+                  height: 280,
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
@@ -53,7 +70,6 @@ class ResultScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 8),
                       ShaderMask(
                         shaderCallback: (bounds) => const LinearGradient(
                           colors: [Colors.amberAccent, Colors.orange],
@@ -63,7 +79,7 @@ class ResultScreen extends StatelessWidget {
                         child: Text(
                           'UJIAN SELESAI,\n${quizProvider.userName.toUpperCase()}!',
                           style: const TextStyle(
-                            fontSize: 28,
+                            fontSize: 26,
                             fontWeight: FontWeight.w900,
                             color: Colors.white,
                             letterSpacing: 2.0,
@@ -74,42 +90,42 @@ class ResultScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.cyanAccent.withOpacity(0.05),
+                          color: Colors.amberAccent.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.cyanAccent.withOpacity(0.4), width: 1.5),
+                          border: Border.all(color: Colors.amberAccent.withOpacity(0.4), width: 1.5),
                         ),
                         child: const Text(
-                          'KEKUATAN SPIRITUAL AKHIR',
+                          'SKOR KEKUATAN SPIRITUAL',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.cyanAccent,
+                            color: Colors.amberAccent,
                             letterSpacing: 3.0,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
                       Container(
-                        width: 180,
-                        height: 180,
+                        width: 130,
+                        height: 130,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: const RadialGradient(
-                            colors: [Color(0xFF1A2A4A), Color(0xFF09090E)],
+                            colors: [Color(0xFF2A1B0A), Color(0xFF09090E)],
                             center: Alignment.center,
                             radius: 0.8,
                           ),
-                          border: Border.all(color: Colors.cyanAccent.withOpacity(0.6), width: 3),
+                          border: Border.all(color: Colors.amberAccent.withOpacity(0.6), width: 3),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.cyanAccent.withOpacity(0.3),
-                              blurRadius: 50,
-                              spreadRadius: 10,
+                              color: Colors.amberAccent.withOpacity(0.25),
+                              blurRadius: 30,
+                              spreadRadius: 5,
                             ),
                             BoxShadow(
                               color: Colors.black.withOpacity(0.8),
@@ -123,15 +139,39 @@ class ResultScreen extends StatelessWidget {
                           child: Text(
                             '${quizProvider.score}',
                             style: const TextStyle(
-                              fontSize: 72,
+                              fontSize: 56,
                               fontWeight: FontWeight.w900,
                               color: Colors.white,
                               shadows: [
-                                Shadow(color: Colors.cyanAccent, blurRadius: 20),
+                                Shadow(color: Colors.orangeAccent, blurRadius: 20),
                               ],
                             ),
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Mencapai Tingkatan:',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blueGrey,
+                          letterSpacing: 2.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        rankName.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.amberAccent,
+                          letterSpacing: 3.0,
+                          shadows: [
+                            Shadow(color: Colors.orangeAccent, blurRadius: 15),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                       const Spacer(),
                       CustomButton(
